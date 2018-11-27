@@ -8,19 +8,9 @@ pixels in an image. Currently it is still in development.
 
 ruby 2.3.1p112 (2016-04-26) [x86_64-linux-gnu]
 
+TO DEPLOY:
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+1. Make sure you have Ruby running on your computer, with Rails configured.
+2. Clone this repository
+3. Run command "rails server"
+4. Navigate to "http://localhost:3000" and find our project (undeveloped for the most part!)
