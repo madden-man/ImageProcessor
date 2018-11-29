@@ -30,30 +30,32 @@ def blurPixel(x,y,radius, original)
   return finalPixel
 end
 
-original=ChunkyPNG::Image.from_file("Source.png")
-#set the radius and number of iterations
-radius = 3
-iterations = 2
-# Copy original image into a new frame buffer
-frameBuffer01=original
+def testOut()
+	original=ChunkyPNG::Image.from_file("../apple.png")
+	#set the radius and number of iterations
+	radius = 3
+	iterations = 2
+	# Copy original image into a new frame buffer
+	frameBuffer01=original
 
-frameBuffer02 = ChunkyPNG::Image.new(original.width, original.height)
-for i in (0 ... iterations)
-  for x in (0 ... original.width)
-    for y in (0 ... original.height)
-      frameBuffer02.set_pixel(x,y,blurPixel(x,y, radius, frameBuffer01))
+	frameBuffer02 = ChunkyPNG::Image.new(original.width, original.height)
+	for i in (0 ... iterations)
+	  for x in (0 ... original.width)
+		for y in (0 ... original.height)
+		  frameBuffer02.set_pixel(x,y,blurPixel(x,y, radius, frameBuffer01))
 
-    end
-  end
-  frameBuffer01 = frameBuffer02
+		end
+	  end
+	  frameBuffer01 = frameBuffer02
+	end
+	#for i in (0...colors.size())
+	#  puts ChunkyPNG::Color.r(colors[i])
+	#  puts ChunkyPNG::Color.g(colors[i])
+	#  puts ChunkyPNG::Color.b(colors[i])
+	#end
+	frameBuffer02.save("../out.png", :fast_rgba)
+
+	# puts ChunkyPNG::Color.r(frameBuffer01[0,10])
+
+	# frameBuffer01
 end
-#for i in (0...colors.size())
-#  puts ChunkyPNG::Color.r(colors[i])
-#  puts ChunkyPNG::Color.g(colors[i])
-#  puts ChunkyPNG::Color.b(colors[i])
-#end
-frameBuffer02.save("out.png", :fast_rgba)
-
-# puts ChunkyPNG::Color.r(frameBuffer01[0,10])
-
-# frameBuffer01
