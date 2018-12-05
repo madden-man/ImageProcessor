@@ -15,3 +15,11 @@ TO DEPLOY:
 3. Clone this repository
 4. Run command "rails server"
 5. Navigate to "http://localhost:3000" and find our project (undeveloped for the most part!)
+
+COMMON PROBLEMS:
+
+For Mac Users using RVM, we had an issue with a Pending Migration Error. If this happens, run this command:
+
+rake db:reset RAILS_ENV=development
+
+It should reset the database and set your environment to development so that the schema is not changed.
