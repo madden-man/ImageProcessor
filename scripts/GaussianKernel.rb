@@ -1,7 +1,14 @@
 require 'chunky_png'
-init = 2
+def max(a,b)
+  if a>b
+    return a
+  else
+    return b
+  end
+
+init = 10
 #r = Math.sqrt((init**2-1)/12.0)
-r = Math.sqrt((init**2-1)/12)/2
+r = Math.sqrt((init**2-1)/12.0)
 if r==0
   r=init
 end
@@ -14,7 +21,7 @@ weightSum = 0
 kernel = Array.new(kernelDim) {Array.new(kernelDim,0)}
 for i in (0 ... kernelDim)
   for j in (0 ... kernelDim)
-    dist = (i-rs)*(i-rs)+(j-rs)*(j-rs)
+    dist = ((i-rs)*(i-rs)+(j-rs)*(j-rs))
     weight = Math.exp( (-dist / (2*r*r)) / (3.14159 *2*r*r))
     weightSum += weight
     kernel[i][j] = weight
