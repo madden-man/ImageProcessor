@@ -7,23 +7,20 @@ def max(a,b)
   end
 end
 
-init = 5
-#r = Math.sqrt((init**2-1)/12.0)
-r = Math.sqrt((init**2-1)/12.0)
-if r==0
-  r=init
-end
+r = 10
 
-rs = (r * 8 -1).ceil #significant radius
-kernelDim = rs*2 + 1
+kernelDim = (r * 2 + 3).ceil #significant radius
 puts kernelDim
 val = 0
 weightSum = 0
 kernel = Array.new(kernelDim) {Array.new(kernelDim,0)}
 for i in (0 ... kernelDim)
   for j in (0 ... kernelDim)
-    dist = ((i-rs)*(i-rs)+(j-rs)*(j-rs))
-    weight = Math.exp( (-dist / (2*r*r)) / (3.14159 *2*r*r))
+    if (i == 0 || i == kernelDim-1) || (j == 0 || j == kernelDim-1)
+      weight = 0.0
+    else
+      weight = 1.0
+    end
     weightSum += weight
     kernel[i][j] = weight
   end
@@ -37,4 +34,4 @@ for x in (0 ... kernelDim)
 
   end
 end
-png.save("Kernel.png", :fast_rgba)
+png.save("BoxKernel5.png", :fast_rgba)
