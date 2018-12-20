@@ -1,5 +1,20 @@
 require 'chunky_png'
 require_relative 'DiscKernel'
+require_relative 'ComposeKernels'
+require_relative 'DepthKernel'
+def writeKernelToImage(kernel, filename = "Kernel") #for debugging
+  kDim = kernel.length
+  out = ChunkyPNG::Image.new(kDim,kDim)
+  for i in (0 ... kDim)
+    for j in (0 ... kDim)
+      val = ((kernel[j][i])*255).round
+      #puts val
+      out.set_pixel(i,j,ChunkyPNG::Color.rgba(val,val,val,255))
+    end
+  end
+  filename << ".png"
+  out.save(filename, :fast_rgba)
+end
 def convolvePixel(image, x, y, kernel)
   kDim = kernel.length() #7
   radius = (kDim/2).floor #3
@@ -24,24 +39,33 @@ def convolvePixel(image, x, y, kernel)
   return finalCol
 end
 
-original=ChunkyPNG::Image.from_file("Source.png")
+original=ChunkyPNG::Image.from_file("345_beauty.png")
+originalZ=ChunkyPNG::Image.from_file("345_z.png")
 #set the radius
-radius = 3
+focusDepth = ChunkyPNG::Color.g(originalZ[100,65])
+filterSize = 24 #the maximum radius
 # Copy original image into a new frame buffer
 frameBuffer01=original
 
-kernel = generateKernel(radius)
 
 #puts "Made Kernel"
-#custom filter shape
-#kernel = [[0,0.0,0],[0.0,1.0,0.0],[0.0,0.0,0.0]]
+
 #frameBuffer02 = ChunkyPNG::Image.new(original.width, original.height)
+
 totalPixels = (original.width*original.height).to_f
 processedPixels = 0
 update = 0
 for x in (0 ... original.width)
   for y in (0 ... original.height)
-    frameBuffer01.set_pixel(x,y,convolvePixel(frameBuffer01, x, y, kernel))
+    radius = ((focusDepth - ChunkyPNG::Color.g(originalZ[x,y])).abs / 255.0) * filterSize
+    filterKernel = makeFilterKernel(radius)
+    depthKernel = makeDepthKernel(originalZ,x,y,radius,3,12.0)
+    #writeKernelToImage(depthKernel, "DepthKernel")
+    finalKernel = composeKernels(filterKernel, depthKernel)
+    #writeKernelToImage(finalKernel, "FinalKernel")
+
+
+    frameBuffer01.set_pixel(x,y,convolvePixel(frameBuffer01, x, y, finalKernel))
     processedPixels+=1
     update += 1
     #display progress every 100 pixels
@@ -52,15 +76,5 @@ for x in (0 ... original.width)
   end
 end
 puts "Complete"
-#  frameBuffer01 = frameBuffer02
 
-#for i in (0...colors.size())
-#  puts ChunkyPNG::Color.r(colors[i])
-#  puts ChunkyPNG::Color.g(colors[i])
-#  puts ChunkyPNG::Color.b(colors[i])
-#end
-frameBuffer01.save("out04.png", :fast_rgba)
-
-# puts ChunkyPNG::Color.r(frameBuffer01[0,10])
-
-# frameBuffer01
+frameBuffer01.save("TestOut24.png", :fast_rgba)

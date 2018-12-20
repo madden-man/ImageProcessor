@@ -12,7 +12,6 @@ def makeDepthKernel(image, x, y, radius, threshold, falloffDist)
       for j in (0-radius ... (radius+1))
         if y+j>=0 && y+j<height #check for bounds
           cz = ChunkyPNG::Color.g(image[x+i,y+j])
-#=begin
           if (cz-z).abs < threshold
             weight = 1.0
           elsif (cz-z).abs - threshold < falloffDist
@@ -20,12 +19,12 @@ def makeDepthKernel(image, x, y, radius, threshold, falloffDist)
           else
             weight = 0.0
           end
-#=end
-          puts weight
+          #puts weight
           kernel[j+radius][i+radius] = weight
         end
       end
     end
   end
+  #puts kernel.length
   return kernel
 end

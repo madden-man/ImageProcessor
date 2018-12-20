@@ -1,6 +1,6 @@
 require 'chunky_png'
 #generates a disc-type kernel of radius r
-def generateKernel(radius, writeKernel=false)
+def makeFilterKernel(radius, writeKernel=false)
   r = radius
 
   kernelDim = (r.ceil*2 + 1).ceil
@@ -44,4 +44,4 @@ def generateKernel(radius, writeKernel=false)
   return filterKernel
 end
 
-generateKernel(18.5,true)
+#generateKernel(18.5,true)

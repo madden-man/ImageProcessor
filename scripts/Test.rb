@@ -28,11 +28,19 @@ def blurPixel(x,y,radius, original)
   return finalPixel
 end
 =end
+def writeKernelToImage(kernel) #for debugging
+  kDim = kernel.length
+  out = ChunkyPNG::Image.new(kDim,kDim)
+  for i in (0 .. kDim)
+    for j in (o ... kDim)
+      val = (kernel[y][x]*255).round
+      out.set_pixel(x,y,ChunkyPNG::Color.rgba(val,val,val,255))
+    end
+  end
+  out.save("KernelOut.png", :fast_rgba)
+end
+
 original=ChunkyPNG::Image.from_file("345_z.png")
-#set the radius and number of iterations
-#radius = 5
-#iterations = 1
-# Copy original image into a new frame buffer
 frameBuffer01 = ChunkyPNG::Image.new(101, 101)
 kernel = makeDepthKernel(original,100,65,50,3,12.0)
 =begin
