@@ -38,43 +38,42 @@ def convolvePixel(image, x, y, kernel)
   finalCol = ChunkyPNG::Color.rgba(colR.round,colG.round,colB.round,255)
   return finalCol
 end
-
-original=ChunkyPNG::Image.from_file("345_beauty.png")
-originalZ=ChunkyPNG::Image.from_file("345_z.png")
-#set the radius
-focusDepth = ChunkyPNG::Color.g(originalZ[100,65])
-filterSize = 24 #the maximum radius
-# Copy original image into a new frame buffer
-frameBuffer01=original
-
-
-#puts "Made Kernel"
-
-#frameBuffer02 = ChunkyPNG::Image.new(original.width, original.height)
-
-totalPixels = (original.width*original.height).to_f
-processedPixels = 0
-update = 0
-for x in (0 ... original.width)
-  for y in (0 ... original.height)
-    radius = ((focusDepth - ChunkyPNG::Color.g(originalZ[x,y])).abs / 255.0) * filterSize
-    filterKernel = makeFilterKernel(radius)
-    depthKernel = makeDepthKernel(originalZ,x,y,radius,3,12.0)
-    #writeKernelToImage(depthKernel, "DepthKernel")
-    finalKernel = composeKernels(filterKernel, depthKernel)
-    #writeKernelToImage(finalKernel, "FinalKernel")
-
-
-    frameBuffer01.set_pixel(x,y,convolvePixel(frameBuffer01, x, y, finalKernel))
-    processedPixels+=1
-    update += 1
-    #display progress every 100 pixels
-    if update%100 == 1
-      percent = ((processedPixels/totalPixels).round(4))*100
-      puts "#{percent}%"
+def runZBlur(imageName, depthImageName, focalDepth, filterSize, depthThreshold, falloffDist,outFilename = "out.png")
+  original=ChunkyPNG::Image.from_file(imageName)
+  originalZ=ChunkyPNG::Image.from_file(depthImageName)
+  #set the radius
+  focusDist = focalDepth
+  filterSize = filterSize #the maximum radius
+  threshold = depthThreshold.to_f
+  falloffDist = falloffDist.to_f
+  # Copy original image into a new frame buffer
+  frameBuffer01=original
+  totalPixels = (original.width*original.height).to_f
+  processedPixels = 0
+  update = 0
+  for x in (0 ... original.width)
+    for y in (0 ... original.height)
+      radius = ((focusDist - ChunkyPNG::Color.g(originalZ[x,y])).abs / 255.0)
+      radius *= filterSize
+      radius += 0.1
+      filterKernel = makeFilterKernel(radius)
+      depthKernel = makeDepthKernel(originalZ,x,y,radius,threshold,falloffDist)
+      #writeKernelToImage(depthKernel, "DepthKernel") #debug
+      finalKernel = composeKernels(filterKernel, depthKernel)
+      #writeKernelToImage(finalKernel, "FinalKernel") #debug
+      frameBuffer01.set_pixel(x,y,convolvePixel(frameBuffer01, x, y, finalKernel))
+      #progress Report
+      processedPixels+=1
+      update += 1
+      #display progress every 100 pixels
+      if update%100 == 1
+        percent = ((processedPixels/totalPixels).round(4))*100
+        puts "#{percent}%"
+      end
     end
   end
+  frameBuffer01.save(outFilename, :fast_rgba)
+  puts "Complete"
 end
-puts "Complete"
 
-frameBuffer01.save("TestOut24.png", :fast_rgba)
+#runZBlur("345_beauty.png","345_z.png",180,8,3,12)
