@@ -1,0 +1,7 @@
+345_beauty.png
+345_z.png
+180
+8
+3
+12
+out.png

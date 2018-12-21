@@ -76,4 +76,35 @@ def runZBlur(imageName, depthImageName, focalDepth, filterSize, depthThreshold, 
   puts "Complete"
 end
 
+def focalPlaneSetup(imageName, depthImageName, focalDepth)
+  original=ChunkyPNG::Image.from_file(imageName)
+  originalZ=ChunkyPNG::Image.from_file(depthImageName)
+  frameBuffer01=original
+  for x in (0 ... original.width)
+    for y in (0 ... original.height)
+      r = ChunkyPNG::Color.r(original[x,y])
+      g = ChunkyPNG::Color.g(original[x,y])
+      b = ChunkyPNG::Color.b(original[x,y])
+      if ChunkyPNG::Color.g(originalZ[x,y]) == focalDepth
+        r *= 0.2
+        g *= 1
+        b *= 0.2
+      elsif ChunkyPNG::Color.g(originalZ[x,y]) < focalDepth
+        r *= 1
+        g *= 0.2
+        b *= 0.2
+      else
+        r *=0.2
+        g *= 0.2
+        b *= 1
+      end
+      r = r.round
+      g = g.round
+      b = b.round
+      frameBuffer01.set_pixel(x,y,ChunkyPNG::Color.rgba(r,g,b,255))
+    end
+  end
+  frameBuffer01.save("FocalPlaneSetup.png", :fast_rgba)
+end
+
 #runZBlur("345_beauty.png","345_z.png",180,8,3,12)
