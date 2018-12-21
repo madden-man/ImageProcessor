@@ -12,9 +12,28 @@ body {
     height: 91vh;
 }
 
+ol li {
+    text-align: left;
+}
+
 </style>
 
 <div class="background-div">
 <h1>Image Processor!</h1>
-<p>Here we will demonstrate how our z-blur algorithm works on an image!</p>
+<p style="white-space: pre; margin: 0 100px 0 100px">TO DEPLOY MintZBlur:
+<ol>
+<li>Run command "gem install chunky_png"</li>
+<li>Navigate to the scripts folder</li>
+<li>run "ruby main.rb"
+This will open up the configuration toolit will ask if you want to load the default configuration, enter 'd' for default config</li>
+<li>Option 8 will write a png file showing the current focal plane, option 3 will let you change the focal plane</li>
+<li>You may mess around with 5 & 6, but leaving them at default will be ideal for the provided image</li>
+<li>Option 4 will adjust the intensity of the effect.</li>
+<li>Option 9 will run the ZBlur algorithm and output a new image, by default named "out.png"</li>
+<li>Option 0 will exit the program giving you the opportunity to save a new config preset</li>
+
+</ol><br>
+Tips: Keep most values between 0 and 255, as the png reader does not support values greater than this <br>Higher values for filter size take longer to process! O(n^2) As long as all inputs are nominal, I haven't seen this crash during runtime<br><br>
+
+Artifacts: Borders - I suspect this is caused by in kernel crop not working properly, though I haven't been able the find the source if the issue <br>Edges - not sure what the source of this is Pixel noise - I think the z-depth pass has some noise from the image compression which is causing irregular filter application across certain gradients</p><br>
 </div>
