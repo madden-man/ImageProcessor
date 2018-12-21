@@ -5,7 +5,7 @@ def makeDepthKernel(image, x, y, radius, threshold, falloffDist)
   height = image.height
   kDim = (radius.ceil*2 + 1).ceil
   radius = radius.ceil
-  kernel = Array.new(kDim) {Array.new(kDim,0)}
+  kernel = Array.new(kDim) {Array.new(kDim,0.0)}
   z = ChunkyPNG::Color.g(image[x,y])
   for i in (0-radius ... (radius+1))
     if x+i>=0 && x+i<width #check for bounds
